@@ -3,16 +3,18 @@
 
 require 'sinatra'
 require 'json'
-require 'resque'
 
 # Our main code is there
 require_relative '../lib/app'
+require_relative '../lib/core/scheduler'
 
 # Settings
 set :views, File.dirname(__FILE__) + '/views'
 set :public_folder, File.dirname(__FILE__) + '/assets'
 set :erb, :layout => :'layouts/default'
-
+configure do
+  set :show_exceptions, false
+end
 # Hooks
 before '/api/*' do
   content_type 'application/json'
@@ -25,16 +27,16 @@ get '/' do
 end
 
 get '/api' do
-  { 'status' => :ok, 'message' => 'oh hai there' }
+  { :status => :ok, :message => 'oh hai there' }
 end
 
 # => Routes for /api/bot
 require_relative 'routes/bot'
 
 not_found do
-  { 'status' => :failed, 'message' => 'not found' }.to_json
+  { :status => :failed, :message => 'not found' }.to_json
 end
 
-error do
-  { 'status' => :failed, 'message' => request.env['sinatra.error'].message }
+error 400..510 do
+  { :status => :failed, :message => request.env['sinatra.error'].message }
 end

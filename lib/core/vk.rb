@@ -3,17 +3,20 @@ require 'parseconfig'
 
 module Core
   class Vk
-    def initialize(email, password, code)
-      @@logged_in   = false
-      @@login_state = nil
 
-      @config       = ParseConfig.new('cfg/bot_cfg')
-      @email        = email
-      @password     = password
-      @code         = code
+    attr_reader :bot_status, :agent
 
-      @@agent = Mechanize.new do |a|
-        a.user_agent_alias = @config.get_value('user_agent_alias')
+    def initialize(email, password, code, target_page)
+      @logged_in    = false
+      @bot_status = { :status => :error, :message => 'initialize error'}
+
+      @email         = email
+      @password      = password
+      @code          = code
+      @target_page   = target_page
+
+      @agent = Mechanize.new do |a|
+        a.user_agent_alias = $bot_config.get_value('user_agent_alias')
         a.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         a.pre_connect_hooks << lambda{|agent, request|
           request['X-Requested-With'] = 'XMLHttpRequest'
@@ -22,15 +25,11 @@ module Core
     end
 
     def logged_in?
-      @@logged_in
-    end
-
-    def login_state
-      @@login_state
+      @logged_in
     end
 
     def login
-      @@agent.get(@config.get_value('home_page')) do |home_page|
+      @agent.get($bot_config.get_value('home_page')) do |home_page|
         login_form        = home_page.forms.first
         login_form.email  = @email
         login_form.pass   = @password
@@ -41,26 +40,33 @@ module Core
     end
 
     def check_login
-      home_page     = login_security
-      logout_link   = home_page.link_with(:id => 'logout_link')
+      home_page    = login_security
+      logout_link  = home_page.link_with(:id => 'logout_link')
 
-      @@login_state = 'login_ok'
-      @@login_state = 'login_error' if logout_link.nil?
-      @@login_state = 'login_ip_error' unless home_page.uri.to_s.match(/security_check/).nil?
+      @bot_status = { :status => :ok, :message => 'running'}
+      @bot_status = { :status => :error, :message => 'invalid target page'} if check_target_page.nil?
+      @bot_status = { :status => :error, :message => 'invalid login/password'} if logout_link.nil?
+      @bot_status = { :status => :error, :message => 'geoip error'} unless home_page.uri.to_s.match(/security_check/).nil?
 
-      @@logged_in   = @@login_state == 'login_ok'
+      @logged_in  = @bot_status[:status] == :ok
+    end
+
+    def check_target_page
+      @agent.get(@target_page)
+    rescue
+      nil
     end
 
     def check_captcha(body)
       #8766<!><!>3<!>3323<!>2<!>877498584665<!>0 - eng captcha
       #8766<!><!>3<!>3323<!>2<!>811148188578<!>1 - rus captcha
-      @@login_state = 'eng_captcha' if body.match(/\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>0/)
-      @@login_state = 'rus_captcha' if body.match(/\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>1/)
+      @bot_status = { :status => :warning, :message => 'short time captcha'} if body.match(/\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>0/)
+      @bot_status = { :status => :error, :message => 'long time captcha'} if body.match(/\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>1/)
     end
 
     # code - last 4 didgits of a phone number
     def login_security
-      home_page = @@agent.get(@config.get_value('home_page'))
+      home_page = @agent.get($bot_config.get_value('home_page'))
 
       if !@code.nil?
         parse_page(home_page, /hash:\s'([^.]\w*)'/)
@@ -72,7 +78,7 @@ module Core
         }
         @hash = nil
 
-        return @@agent.post('http://vk.com/login.php', params)
+        return @agent.post('http://vk.com/login.php', params)
       else
         return home_page
       end
@@ -84,6 +90,12 @@ module Core
         @hash ||= $1
       end
       @hash
+    end
+
+    def get_page_title(page)
+      @agent.get(page).title
+    rescue
+      nil
     end
 
   end

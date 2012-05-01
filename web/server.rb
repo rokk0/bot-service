@@ -12,9 +12,8 @@ require_relative '../lib/app'
 set :views, File.dirname(__FILE__) + '/views'
 set :public_folder, File.dirname(__FILE__) + '/assets'
 set :erb, :layout => :'layouts/default'
-configure do
-  set :show_exceptions, false
-end
+set :show_exceptions, false
+
 # Hooks
 before '/api/*' do
   content_type 'application/json'

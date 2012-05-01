@@ -36,6 +36,8 @@ module Core
 
         check_login
       end
+    rescue
+      nil
     end
 
     def check_login

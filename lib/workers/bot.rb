@@ -4,10 +4,6 @@ class BotWorker
     @bot = eval("Bots::#{bot['bot_type'].capitalize}").new(bot)
   end
 
-  def id
-    @bot.id
-  end
-
   def status
     @bot.bot_status[:status]
   end

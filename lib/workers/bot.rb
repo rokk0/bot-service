@@ -1,8 +1,3 @@
-require_relative '../core/vk'
-require_relative '../bots/group'
-require_relative '../bots/discussion'
-require 'encryptor'
-
 class BotWorker
 
   def initialize(bot)

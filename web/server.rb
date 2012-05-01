@@ -3,10 +3,10 @@
 
 require 'sinatra'
 require 'json'
+require 'encryptor'
 
 # Our main code is there
 require_relative '../lib/app'
-require_relative '../lib/core/scheduler'
 
 # Settings
 set :views, File.dirname(__FILE__) + '/views'

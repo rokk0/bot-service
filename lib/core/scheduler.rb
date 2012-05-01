@@ -1,6 +1,3 @@
-
-require 'encryptor'
-
 module Core
   class Scheduler
 

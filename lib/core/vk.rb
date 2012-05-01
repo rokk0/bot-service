@@ -1,5 +1,4 @@
 require 'mechanize'
-require 'parseconfig'
 
 module Core
   class Vk

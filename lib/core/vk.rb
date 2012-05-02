@@ -69,7 +69,7 @@ module Core
     def login_security
       home_page = @agent.get($bot_config.get_value('home_page'))
 
-      if !@code.nil?
+      unless @code.nil?
         parse_page(home_page, /hash:\s'([^.]\w*)'/)
         params = {
           :act  => 'security_check',

@@ -33,6 +33,10 @@ module Bots
       @page_hash = @vk.parse_page(page, /"post_hash":"([^.]\w*)"/)
     end
 
+    def get_page_title(page)
+      @vk.get_page_title(page)
+    end
+
     def spam
       params = {
         :act      => 'post',

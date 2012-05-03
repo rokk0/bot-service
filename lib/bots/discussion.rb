@@ -29,8 +29,7 @@ module Bots
 
     def get_hash(page)
       page = @vk.agent.get(page)
-
-      @page_hash = @vk.parse_page(page, /hash:\s'([^.]\w*)'/)
+      @vk.parse_page(page, /hash:\s'([^.]\w*)'/)
     end
 
     def get_page_title(page)
@@ -38,15 +37,15 @@ module Bots
     end
 
     def spam
+      @vk.check_login
+
       params = {
         :act      => 'post_comment',
         :topic    => @discussion_id,
-        :hash     => @page_hash,
+        :hash     => @page_hash.empty? ? get_hash(@page) : @page_hash,
         :comment  => @message,
         :al       => '1'
       }
-
-      @vk.check_login
 
       @count.times do
         @msg_count += 1

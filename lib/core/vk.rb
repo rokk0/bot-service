@@ -47,7 +47,7 @@ module Core
       @bot_status = { :status => :ok, :message => 'running'}
       @bot_status = { :status => :error, :message => 'invalid target page'} if check_target_page.nil?
       @bot_status = { :status => :error, :message => 'invalid login/password'} if logout_link.nil?
-      @bot_status = { :status => :error, :message => 'geoip error'} unless home_page.uri.to_s.match(/security_check/).nil?
+      @bot_status = { :status => :error, :message => 'geoip error'} if home_page.uri.to_s =~ /security_check/
 
       @logged_in  = @bot_status[:status] == :ok
     end
@@ -61,8 +61,8 @@ module Core
     def check_captcha(body)
       #8766<!><!>3<!>3323<!>2<!>877498584665<!>0 - eng captcha
       #8766<!><!>3<!>3323<!>2<!>811148188578<!>1 - rus captcha
-      @bot_status = { :status => :warning, :message => 'short time captcha'} if body.match(/\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>0/)
-      @bot_status = { :status => :error, :message => 'long time captcha'} if body.match(/\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>1/)
+      @bot_status = { :status => :warning, :message => 'short time captcha'} if body =~ /\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>0/
+      @bot_status = { :status => :error, :message => 'long time captcha'} if body =~ /\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>1/
     end
 
     # code - last 4 didgits of a phone number
@@ -70,11 +70,11 @@ module Core
       home_page = @agent.get($bot_config.get_value('home_page'))
 
       unless @code.nil?
-        parse_page(home_page, /hash:\s'([^.]\w*)'/)
+        parse_page(home_page, /hash:\s'(\w+)'/)
         params = {
           :act  => 'security_check',
           :code => @code,
-          :to   => home_page.uri.to_s.match(/to=([^.]*)&/).to_s,
+          :to   => home_page.uri.to_s.scan(/to=(.+)&/).flatten.first.to_s,
           :hash => @hash
         }
         @hash = nil
@@ -87,8 +87,7 @@ module Core
 
     def parse_page(page, regexp)
       page.search('script').each do |script|
-        script.content.match(regexp)
-        @hash ||= $1
+        @hash ||= script.content.scan(regexp).flatten.first
       end
       @hash
     end

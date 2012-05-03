@@ -37,8 +37,8 @@ module Core
       bots      = {}
 
       jobs.each do |job|
-        bot_id          = job.tags[1].scan(/bot_(\d+)/).flatten
-        bots[bot_id[0]] = { :status => job.tags[2], :message => job.tags[3]} unless bot_id[0].nil?
+        bot_id       = job.tags[1].scan(/bot_(\d+)/).flatten.first
+        bots[bot_id] = { :status => job.tags[2], :message => job.tags[3]} unless bot_id.nil?
       end
 
       bots.to_json

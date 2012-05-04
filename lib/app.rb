@@ -1,3 +1,4 @@
+require_relative 'core/logger'
 require_relative 'core/scheduler'
 require_relative 'core/vk'
 

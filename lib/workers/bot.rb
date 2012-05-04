@@ -1,5 +1,7 @@
 class BotWorker
 
+  include Logging
+
   def initialize(bot)
     @bot = eval("Bots::#{bot['bot_type'].capitalize}").new(bot)
   end
@@ -28,6 +30,8 @@ class BotWorker
   end
 
   def self.run(bot)
+  
+    logger.info "starting bot"
     bot = decrypt(bot)
 
     status = { :status => :error, :message => 'data error' }

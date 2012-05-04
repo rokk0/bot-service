@@ -19,10 +19,6 @@ module Bots
       @vk.login
     end
 
-    def logged_in?
-      @vk.logged_in?
-    end
-
     def bot_status
       @vk.bot_status
     end

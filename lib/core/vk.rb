@@ -52,6 +52,7 @@ module Core
       @logged_in  = @bot_status[:status] == :ok
     end
 
+    # Check existing of page
     def check_target_page
       @agent.get(@target_page)
     rescue
@@ -86,9 +87,7 @@ module Core
     end
 
     def parse_page(page, regexp)
-      page.search('script').each do |script|
-        @hash ||= script.content.scan(regexp).flatten.first
-      end
+      page.search('script').each { |script| @hash ||= script.content.scan(regexp).flatten.first }
       @hash
     end
 

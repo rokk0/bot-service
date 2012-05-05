@@ -2,7 +2,7 @@ module Core
   class Scheduler
 
     def self.add_job(bot)
-      status = { :status => :error, :message => 'already running' }
+      status = { :status => :info, :message => 'already running' }
 
       if get_bot_job(bot['id']).empty?
         worker = BotWorker.new(bot)
@@ -12,11 +12,13 @@ module Core
 
         # Bot spams outside of scheduler cycle and returns status
         worker.spam
-        status = worker.get_worker_status
+        status            = worker.get_worker_status
+        interval_check    = bot['interval'] =~ /(\d+)h(\d+)m/
+        status[:status]   = :sent if status[:status] != :error && interval_check == nil
 
         # Cycle makes first iterate at Time.now
         # So at first time we put status in job tags, but bot doesn't spam
-        $scheduler.every "#{bot['interval']}m10s", :first_at => Time.now, :tags => ["user_#{bot['user_id']}", "bot_#{bot['id']}"] do |job|
+        $scheduler.every bot['interval'], :first_at => Time.now, :tags => ["user_#{bot['user_id']}", "bot_#{bot['id']}"] do |job|
           worker.spam unless first_run
           first_run = false
 
@@ -26,7 +28,7 @@ module Core
           job.tags = tags
 
           job.unschedule if worker.status == :error
-        end if worker.status != :error
+        end if worker.status != :error && interval_check != nil
       end
 
       status

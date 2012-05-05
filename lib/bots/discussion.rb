@@ -35,22 +35,24 @@ module Bots
     def spam
       @vk.check_login
 
-      params = {
-        :act      => 'post_comment',
-        :topic    => @discussion_id,
-        :hash     => @page_hash.empty? ? get_hash(@page) : @page_hash,
-        :comment  => @message,
-        :al       => '1'
-      }
+      if @vk.logged_in?
+        params = {
+          :act      => 'post_comment',
+          :topic    => @discussion_id,
+          :hash     => @page_hash.empty? ? get_hash(@page) : @page_hash,
+          :comment  => @message,
+          :al       => '1'
+        }
 
-      @count.times do
-        @msg_count += 1
-        params[:comment] = "#{@message}\n\n#{(rand(9999999999) + 100000000)}"
-        page = @vk.agent.post('http://vk.com/al_board.php', params, { 'Referer' => @page })
+        @count.times do
+          @msg_count += 1
+          params[:comment] = "#{@message}\n\n#{(rand(9999999999) + 100000000)}"
+          page = @vk.agent.post('http://vk.com/al_board.php', params, { 'Referer' => @page })
 
-        @vk.check_captcha(page.body)
-        p "user:#{@user_id}/bot:#{@id} - sending discussion message ##{@msg_count} - status:#{@vk.bot_status[:status]}/message:#{@vk.bot_status[:message]}"
-      end if @vk.logged_in?
+          @vk.check_captcha(page.body)
+          p "user:#{@user_id}/bot:#{@id} - sending discussion message ##{@msg_count} - status:#{@vk.bot_status[:status]}/message:#{@vk.bot_status[:message]}"
+        end
+      end
     end
 
   end

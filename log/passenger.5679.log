@@ -1,0 +1,11 @@
+WARNING: gnome-keyring:: couldn't connect to: /tmp/keyring-T3tVyd/pkcs11: No such file or directory
+2012/05/02 23:23:58 [error] 8425#0: *4 "/home/r0kk0/aptana_workspace/bot-service/public/index.html" is not found (2: No such file or directory), client: 127.0.0.1, server: _, request: "HEAD / HTTP/1.1", host: "0.0.0.0"
+2012/05/02 23:24:29 [error] 8425#0: *5 open() "/home/r0kk0/aptana_workspace/bot-service/public/api/user/1/bots" failed (2: No such file or directory), client: 127.0.0.1, server: _, request: "GET /api/user/1/bots HTTP/1.1", host: "localhost:5679"
+2012/05/02 23:24:44 [error] 8425#0: *6 open() "/home/r0kk0/aptana_workspace/bot-service/public/api/bot/run" failed (2: No such file or directory), client: 127.0.0.1, server: _, request: "POST /api/bot/run HTTP/1.1", host: "localhost:5679"
+WARNING: gnome-keyring:: couldn't connect to: /tmp/keyring-T3tVyd/pkcs11: No such file or directory
+2012/05/02 23:27:20 [error] 10467#0: *4 "/home/r0kk0/aptana_workspace/bot-service/public/index.html" is not found (2: No such file or directory), client: 127.0.0.1, server: _, request: "HEAD / HTTP/1.1", host: "0.0.0.0"
+2012/05/02 23:27:25 [error] 10467#0: *5 open() "/home/r0kk0/aptana_workspace/bot-service/public/api/bot/2" failed (2: No such file or directory), client: 127.0.0.1, server: _, request: "GET /api/bot/2 HTTP/1.1", host: "localhost:5679"
+2012/05/02 23:27:25 [error] 10467#0: *5 open() "/home/r0kk0/aptana_workspace/bot-service/public/favicon.ico" failed (2: No such file or directory), client: 127.0.0.1, server: _, request: "GET /favicon.ico HTTP/1.1", host: "localhost:5679"
+2012/05/02 23:27:28 [error] 10467#0: *5 open() "/home/r0kk0/aptana_workspace/bot-service/public/api/user/1/bots" failed (2: No such file or directory), client: 127.0.0.1, server: _, request: "GET /api/user/1/bots HTTP/1.1", host: "localhost:5679"
+2012/05/02 23:27:28 [error] 10467#0: *5 open() "/home/r0kk0/aptana_workspace/bot-service/public/favicon.ico" failed (2: No such file or directory), client: 127.0.0.1, server: _, request: "GET /favicon.ico HTTP/1.1", host: "localhost:5679"
+2012/05/02 23:27:29 [error] 10467#0: *7 open() "/home/r0kk0/aptana_workspace/bot-service/public/api/user/1/bots" failed (2: No such file or directory), client: 127.0.0.1, server: _, request: "GET /api/user/1/bots HTTP/1.1", host: "localhost:5679"

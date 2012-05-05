@@ -44,9 +44,9 @@ module Core
       home_page    = login_security
       logout_link  = home_page.link_with(:id => 'logout_link')
 
-      @bot_status = { :status => :ok, :message => 'running'}
-      @bot_status = { :status => :error, :message => 'invalid target page'} if check_target_page.nil?
+      @bot_status = { :status => :ok, :message => 'ok'}
       @bot_status = { :status => :error, :message => 'invalid login/password'} if logout_link.nil?
+      @bot_status = { :status => :error, :message => 'invalid target page'} if check_target_page.nil?
       @bot_status = { :status => :error, :message => 'geoip error'} if home_page.uri.to_s =~ /security_check/
 
       @logged_in  = @bot_status[:status] == :ok

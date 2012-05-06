@@ -5,13 +5,13 @@ module Core
 
     attr_reader :bot_status, :agent
 
-    def initialize(email, password, code, target_page)
+    def initialize(phone, password, target_page)
       @logged_in    = false
       @bot_status = { :status => :error, :message => 'initialize error'}
 
-      @email         = email
+      @phone         = phone
       @password      = password
-      @code          = code
+      @code          = phone[phone.length - 4..phone.length] unless phone.nil? || phone.length < 4
       @target_page   = target_page || $bot_config.get_value('home_page')
 
       @agent = Mechanize.new do |a|
@@ -30,7 +30,7 @@ module Core
     def login
       @agent.get($bot_config.get_value('home_page')) do |home_page|
         login_form        = home_page.forms.first
-        login_form.email  = @email
+        login_form.email  = @phone
         login_form.pass   = @password
         login_form.submit
 

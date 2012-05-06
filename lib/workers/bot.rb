@@ -91,7 +91,7 @@ class BotWorker
   def self.approve(account)
      account = decrypt(account)
 
-     @vk = Core::Vk.new(account['email'], account['password'], account['code'], nil)
+     @vk = Core::Vk.new(account['phone'], account['password'], nil)
      @vk.login
      @vk.bot_status
    rescue

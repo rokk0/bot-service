@@ -4,7 +4,7 @@ module Bots
     attr_reader :id, :page, :page_title, :page_hash
 
     def initialize(bot)
-      @vk = Core::Vk.new(bot['email'], bot['password'], bot['code'], bot['page'])
+      @vk = Core::Vk.new(bot['phone'], bot['password'], bot['page'])
 
       @id         = bot['id']
       @user_id    = bot['user_id']

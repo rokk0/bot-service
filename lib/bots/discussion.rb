@@ -49,7 +49,7 @@ module Bots
           params[:comment] = "#{@message}\n\n#{(rand(9999999999) + 100000000)}"
           page = @vk.agent.post('http://vk.com/al_board.php', params, { 'Referer' => @page })
 
-          @vk.check_captcha(page.body)
+          @vk.check_post_response(page.body)
           p "user:#{@user_id}/bot:#{@id} - sending discussion message ##{@msg_count} - status:#{@vk.bot_status[:status]}/message:#{@vk.bot_status[:message]}"
         end
       end

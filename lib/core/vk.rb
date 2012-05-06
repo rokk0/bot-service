@@ -59,11 +59,16 @@ module Core
       nil
     end
 
-    def check_captcha(body)
-      #8766<!><!>3<!>3323<!>2<!>877498584665<!>0 - eng captcha
-      #8766<!><!>3<!>3323<!>2<!>811148188578<!>1 - rus captcha
-      @bot_status = { :status => :warning, :message => 'short time captcha'} if body =~ /\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>0/
+    def check_post_response(body)
+      #9018<!><!>3<!>3325<!>0<!>                          - group post response
+      #9018<!><!>3<!>3325<!>0<!><!int>141<!><!int>160<!>  - discussion post response (141 - number of your post, 160 - dunno :D)
+      #9018<!><!>3<!>3325<!>8<!>Access denied<!>          - request error
+      #8766<!><!>3<!>3323<!>2<!>811148188578<!>1          - long time captcha
+      #8766<!><!>3<!>3323<!>2<!>877498584665<!>0          - short time captcha
+
+      @bot_status = { :status => :error, :message => $1} if body =~ /\d+<!><!>\d+<!>\d+<!>\d+<!>(\D+)<!>/
       @bot_status = { :status => :error, :message => 'long time captcha'} if body =~ /\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>1/
+      @bot_status = { :status => :warning, :message => 'short time captcha'} if body =~ /\d+<!><!>\d+<!>\d+<!>\d+<!>\d+<!>0/
     end
 
     # code - last 4 didgits of a phone number

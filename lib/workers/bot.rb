@@ -81,7 +81,6 @@ class BotWorker
     bots = {}
 
     jobs.each do |job|
-      p job.tags
       bot_id       = job.tags[2].scan(/bot_(\d+)/).flatten.first
       bots[bot_id] = { :status => job.tags[3], :message => job.tags[4]} unless bot_id.nil?
     end

@@ -2,7 +2,6 @@ module Core
   class Scheduler
 
     def self.add_job(bot)
-      p bot
       status = { :status => :info, :message => 'already running' }
 
       if get_bot_job(bot['id']).empty?

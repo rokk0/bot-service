@@ -30,50 +30,73 @@ class BotWorker
   end
 
   def self.run(bot)
-  
     logger.info "starting bot"
+
     bot = decrypt(bot)
 
-    status = { :status => :error, :message => 'data error' }
-
-    status = Core::Scheduler.add_job(bot) unless bot.nil?
-
-    status
+    Core::Scheduler.add_job(bot)
+  rescue
+    { :status => :error, :message => 'data error' }
   end
 
   def self.stop(bot)
     bot = decrypt(bot)
 
-    status = { :status => :error, :message => 'data error' }
+    Core::Scheduler.remove_job(bot['id'])
+  rescue
+    { :status => :error, :message => 'data error' }
+  end
 
-    status =  Core::Scheduler.remove_job(bot['id']) unless bot.nil?
+  def self.stop_account_bots(account)
+    account = decrypt(account)
 
-    status
+    Core::Scheduler.remove_account_jobs(account['account_id'])
+  rescue
+    { :status => :error, :message => 'data error' }
   end
 
   def self.stop_user_bots(user)
     user = decrypt(user)
 
-    status = { :status => :error, :message => 'data error' }
+    Core::Scheduler.remove_user_jobs(user['user_id'])
+  rescue
+    { :status => :error, :message => 'data error' }
+  end
 
-    status =  Core::Scheduler.remove_user_jobs(user['user_id']) unless user.nil?
+  def self.get_account_bots(account_id)
+    jobs = Core::Scheduler.get_account_jobs(account_id)
 
-    status
+    create_bots_hash(jobs)
   end
 
   def self.get_user_bots(user_id)
-    jobs      = Core::Scheduler.get_user_jobs(user_id)
-    job_tags  = {}
-    bots      = {}
+    jobs = Core::Scheduler.get_user_jobs(user_id)
 
-    # Create hash like { "<bot_id>" => { :status => "<bot_status>", :message => "<status_message>" } }
-    # from bot tags ["user_<id>", "bot_<id>", "<bot_status>", "<status_message>"]
+    create_bots_hash(jobs)
+  end
+
+  # Create hash like { "<bot_id>" => { :status => "<bot_status>", :message => "<status_message>" } }
+  # from bot tags ["user_<id>", "account_<id>", "bot_<id>", "<bot_status>", "<status_message>"]
+  def self.create_bots_hash(jobs)
+    bots = {}
+
     jobs.each do |job|
-      bot_id       = job.tags[1].scan(/bot_(\d+)/).flatten.first
-      bots[bot_id] = { :status => job.tags[2], :message => job.tags[3]} unless bot_id.nil?
+      p job.tags
+      bot_id       = job.tags[2].scan(/bot_(\d+)/).flatten.first
+      bots[bot_id] = { :status => job.tags[3], :message => job.tags[4]} unless bot_id.nil?
     end
 
     bots
+  end
+
+  def self.approve(account)
+     account = decrypt(account)
+
+     @vk = Core::Vk.new(account['email'], account['password'], account['code'], nil)
+     @vk.login
+     @vk.bot_status
+   rescue
+    { :status => :error, :message => 'data error' }
   end
 
   def self.decrypt(data)

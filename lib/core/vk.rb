@@ -12,7 +12,7 @@ module Core
       @email         = email
       @password      = password
       @code          = code
-      @target_page   = target_page
+      @target_page   = target_page || $bot_config.get_value('home_page')
 
       @agent = Mechanize.new do |a|
         a.user_agent_alias = $bot_config.get_value('user_agent_alias')

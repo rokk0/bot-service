@@ -100,14 +100,14 @@ class BotWorker
 
   def self.check_session(account)
     account = decrypt(account)
-    session = !eval("defined? $account_#{account['id']}").nil? && eval("$account_#{account['id']}.logged_in?")
+    session = !$accounts[account['id']].nil? && $accounts[account['id']].logged_in?
 
     unless session
-      vk = Core::Vk.new(account['phone'], account['password'], nil)
+      vk = Core::Vk.new(account['phone'], account['password'])
       vk.login
       session = vk.logged_in?
 
-      eval("$account_#{account['id']} = vk")
+      $accounts[account['id']] = vk
     end
 
     { :session => session }

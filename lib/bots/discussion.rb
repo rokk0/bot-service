@@ -4,14 +4,14 @@ module Bots
     attr_reader :id, :page, :page_title, :page_hash
 
     def initialize(bot)
-      if eval("defined? $account_#{bot['account_id']}").nil?
-        vk = Core::Vk.new(bot['phone'], bot['password'], bot['page'])
+      if $accounts[bot['account_id']].nil? || !$accounts[bot['account_id']].logged_in?
+        vk = Core::Vk.new(bot['phone'], bot['password'])
         vk.login
 
-        eval("$account_#{bot['account_id']} = vk")
+        $accounts[bot['account_id']] = vk
       end
 
-      @vk = eval("$account_#{bot['account_id']}")
+      @vk = $accounts[bot['account_id']]
 
       @id             = bot['id']
       @user_id        = bot['user_id']

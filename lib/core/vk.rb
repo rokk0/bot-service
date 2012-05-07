@@ -5,14 +5,13 @@ module Core
 
     attr_reader :bot_status, :agent
 
-    def initialize(phone, password, target_page)
+    def initialize(phone, password)
       @logged_in    = false
       @bot_status   = { :status => :error, :message => 'initialize error'}
 
       @phone        = phone
       @password     = password
       @code         = phone[phone.length - 4..phone.length] unless phone.nil? || phone.length < 4
-      @target_page  = target_page || $bot_config.get_value('home_page')
 
       @agent = Mechanize.new do |a|
         a.user_agent_alias = $bot_config.get_value('user_agent_alias')
@@ -46,18 +45,18 @@ module Core
 
       @bot_status = { :status => :ok,    :message => 'ok'}
       @bot_status = { :status => :error, :message => 'invalid login/password'} if logout_link.nil?
-      @bot_status = { :status => :error, :message => 'invalid target page'}    if check_target_page.nil?
+      #@bot_status = { :status => :error, :message => 'invalid target page'}    if check_target_page.nil?
       @bot_status = { :status => :error, :message => 'geoip error'}            if home_page.uri.to_s =~ /security_check/
 
       @logged_in  = @bot_status[:status] == :ok
     end
 
     # Check existing of page
-    def check_target_page
-      @agent.get(@target_page)
-    rescue
-      nil
-    end
+    #def check_target_page
+    #  @agent.get(@target_page)
+    #rescue
+    #  nil
+    #end
 
     def check_post_response(body)
       #9018<!><!>3<!>3325<!>0<!>                          - group post response

@@ -12,7 +12,7 @@ module Logging
   # Global, memoized, lazy initialized instance of a logger
   def self.logger
     LittleLogFriend.colorize!
-    @logger ||= Logger.new(STDOUT)
+    @logger ||= CustomLogger.new(STDOUT)
   end
 
   def self.included(base)
@@ -39,6 +39,15 @@ class Clogger
 
     Fancy = "#{Time.now.strftime("%Y-%m-%d %H:%M:%S")} [  REQ] $remote_addr : $request -- $status"
 
+  end
+
+end
+
+class CustomLogger < Logger
+
+  def error(message, e = nil)
+    super message
+    error "Exception message: #{e.message}" if e
   end
 
 end

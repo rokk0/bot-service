@@ -34,8 +34,8 @@ class BotWorker
 
     logger.info "Bot ##{bot['id']} started for user ##{bot['user_id']}"
     Core::Scheduler.add_job(bot)
-  rescue
-    logger.error "Error while starting bot for user ##{bot['user_id']}"
+  rescue Exception => e
+    logger.error "Error while starting bot ##{bot['id']}", e
     { :status => :error, :message => 'data error' }
   end
 
@@ -44,8 +44,8 @@ class BotWorker
 
     logger.info "Bot ##{bot['id']} stopped for user ##{bot['user_id']}"
     Core::Scheduler.remove_job(bot['id'])
-  rescue
-    logger.error "Error while stopping bot for user ##{bot['user_id']}"
+  rescue Exception => e
+    logger.error "Error while stopping bot ##{bot['id']}", e
     { :status => :error, :message => 'data error' }
   end
 

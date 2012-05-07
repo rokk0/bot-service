@@ -1,3 +1,5 @@
+$LOG_PATH = File.expand_path('../log/',File.dirname(__FILE__))
+
 require_relative 'core/logger'
 require_relative 'core/scheduler'
 require_relative 'core/vk'

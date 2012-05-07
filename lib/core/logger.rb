@@ -1,4 +1,5 @@
 require 'logger'
+require 'little_log_friend'
 
 # Thanks to
 # http://stackoverflow.com/questions/917566/ruby-share-logger-instance-among-module-classes
@@ -10,11 +11,34 @@ module Logging
 
   # Global, memoized, lazy initialized instance of a logger
   def self.logger
+    LittleLogFriend.colorize!
     @logger ||= Logger.new(STDOUT)
   end
 
   def self.included(base)
     base.extend(self)
   end
+
 end
 
+# Disable useless rack logger completely! Yay, yay!
+# http://gromnitsky.blogspot.com/2012/04/how-to-disable-rack-logging-in-sinatra.html
+module Rack
+  class CommonLogger
+    def call(env)
+      # do nothing
+      @app.call(env)
+    end
+  end
+end
+
+class Clogger
+
+  # Adding our fancy log format
+  module Format
+
+    Fancy = "#{Time.now.strftime("%Y-%m-%d %H:%M:%S")} [  REQ] $remote_addr : $request -- $status"
+
+  end
+
+end

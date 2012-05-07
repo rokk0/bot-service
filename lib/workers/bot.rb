@@ -30,20 +30,22 @@ class BotWorker
   end
 
   def self.run(bot)
-    logger.info "starting bot"
-
     bot = decrypt(bot)
 
+    logger.info "Bot ##{bot['id']} started for user ##{bot['user_id']}"
     Core::Scheduler.add_job(bot)
   rescue
+    logger.error "Error while starting bot for user ##{bot['user_id']}"
     { :status => :error, :message => 'data error' }
   end
 
   def self.stop(bot)
     bot = decrypt(bot)
 
+    logger.info "Bot ##{bot['id']} stopped for user ##{bot['user_id']}"
     Core::Scheduler.remove_job(bot['id'])
   rescue
+    logger.error "Error while stopping bot for user ##{bot['user_id']}"
     { :status => :error, :message => 'data error' }
   end
 
@@ -91,7 +93,7 @@ class BotWorker
   def self.approve(account)
      account = decrypt(account)
 
-     @vk = Core::Vk.new(account['phone'], account['password'], nil)
+     @vk = Core::Vk.new(account['phone'], account['password'])
      @vk.login
      @vk.bot_status
    rescue

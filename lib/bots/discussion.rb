@@ -1,6 +1,8 @@
 module Bots
   class Discussion < Core::Vk
 
+    include Logging
+
     attr_reader :id, :page, :page_title, :page_hash
 
     def initialize(bot)
@@ -55,7 +57,7 @@ module Bots
           page = @vk.agent.post('http://vk.com/al_board.php', params, { 'Referer' => @page })
 
           @vk.check_post_response(page.body)
-          p "user:#{@user_id}/bot:#{@id} - sending discussion message ##{@msg_count} - status:#{@vk.bot_status[:status]}/message:#{@vk.bot_status[:message]}"
+          logger.info "user:#{@user_id}/bot:#{@id} - sending discussion message ##{@msg_count} - status:#{@vk.bot_status[:status]}/message:#{@vk.bot_status[:message]}"
         end
       end
     end

@@ -98,6 +98,23 @@ class BotWorker
     { :status => :error, :message => 'data error' }
   end
 
+  def self.check_session(account)
+    account = decrypt(account)
+    session = !eval("defined? $account_#{account['id']}").nil? && eval("$account_#{account['id']}.logged_in?")
+
+    unless session
+      vk = Core::Vk.new(account['phone'], account['password'], nil)
+      vk.login
+      session = vk.logged_in?
+
+      eval("$account_#{account['id']} = vk")
+    end
+
+    { :session => session }
+  rescue
+    { :session => false }
+  end
+
   def self.decrypt(data)
     decrypted_value = Encryptor.decrypt(data, :key => $secret_key)
     JSON.parse(decrypted_value)

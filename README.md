@@ -1,12 +1,12 @@
 # Bot configuration (bot_cfg):  
 
->>user_agent_alias = 'Linux Mozilla'  
+>user_agent_alias = 'Linux Mozilla'  
 home_page = 'http://vk.com'  
 secret_key = '123123'  
 
 # Mechanize user_agent_alias:
 
->>'Windows IE 6'  => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',  
+>'Windows IE 6'  => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',  
 'Windows IE 7'    => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',  
 'Windows Mozilla' => 'Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.4b) Gecko/20030516 Mozilla Firebird/0.6',  
 'Mac Safari'      => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_2; de-at) AppleWebKit/531.21.8 (KHTML, like Gecko) Version/4.0.4 Safari/531.21.10',  

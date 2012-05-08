@@ -17,7 +17,6 @@ module Bots
 
       @id             = bot['id']
       @user_id        = bot['user_id']
-      @count          = (1..8).member?(bot['count'].to_i) ? bot['count'].to_i : 1
       @page           = bot['page']
       @discussion_id  = '-' + @page[/\d+_\d+/].to_s
       @page_hash      = bot['page_hash']
@@ -51,14 +50,12 @@ module Bots
           :al       => '1'
         }
 
-        @count.times do
-          @msg_count += 1
-          params[:comment] = "#{@message}\n\n#{(rand(9999999999) + 100000000)}"
-          page = @vk.agent.post('http://vk.com/al_board.php', params, { 'Referer' => @page })
+        @msg_count += 1
+        params[:comment] = "#{@message}\n\n#{(rand(9999999999) + 100000000)}"
+        page = @vk.agent.post('http://vk.com/al_board.php', params, { 'Referer' => @page })
 
-          @vk.check_post_response(page.body)
-          logger.info "user:#{@user_id}/bot:#{@id} - sending discussion message ##{@msg_count} - status:#{@vk.bot_status[:status]}/message:#{@vk.bot_status[:message]}"
-        end
+        @vk.check_post_response(page.body)
+        logger.info "user:#{@user_id}/bot:#{@id} - sending discussion message ##{@msg_count} - status:#{@vk.bot_status[:status]}/message:#{@vk.bot_status[:message]}"
       end
     end
 

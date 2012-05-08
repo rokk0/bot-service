@@ -96,7 +96,7 @@ class BotWorker
      @vk = Core::Vk.new(account['phone'], account['password'])
      @vk.login
      @vk.bot_status
-   rescue
+  rescue
     { :status => :error, :message => 'data error' }
   end
 

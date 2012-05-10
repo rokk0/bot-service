@@ -3,6 +3,8 @@ require 'mechanize'
 module Core
   class Vk
 
+    include Logging
+
     attr_reader :bot_status, :agent
 
     def initialize(phone, password)
@@ -35,7 +37,11 @@ module Core
 
         check_login
       end
-    rescue
+
+      @agent
+    rescue Exception => e
+      #TODO: check if login REALLY failed at this point
+      logger.error "login failed #{e.message}"
       nil
     end
 
@@ -49,6 +55,17 @@ module Core
       @bot_status = { :status => :error, :message => 'geoip error'}            if home_page.uri.to_s =~ /security_check/
 
       @logged_in  = @bot_status[:status] == :ok
+    end
+
+    def get_user_identifiers
+      href = @agent.page.link_with(:class => 'hasedit fl_l').href
+
+      @agent.get("http://vk.com" + href)
+
+      { :vk_username => @agent.page.title, :vk_profile_link => @agent.page.uri.to_s }
+    rescue Exception => e
+      logger.error "something fucked up while trying to grab user info. here's the error: #{e.message}"
+      nil
     end
 
     # Check existing of page

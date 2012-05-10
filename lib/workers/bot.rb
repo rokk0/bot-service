@@ -91,12 +91,13 @@ class BotWorker
   end
 
   def self.approve(account)
-     account = decrypt(account)
+   account = decrypt(account)
 
-     @vk = Core::Vk.new(account['phone'], account['password'])
-     @vk.login
-     @vk.bot_status
-  rescue
+   @vk = Core::Vk.new(account['phone'], account['password'])
+   @vk.login
+   @vk.bot_status.merge(@vk.get_user_identifiers)
+  rescue Exception => e
+    logger.error "account not approved: #{e.message}"
     { :status => :error, :message => 'data error' }
   end
 

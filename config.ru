@@ -4,8 +4,8 @@ require 'parseconfig'
 require 'clogger'
 
 # Define some config parameters
-$bot_config  = ParseConfig.new('cfg/bot_cfg')
-$secret_key  = $bot_config.get_value('secret_key')
+$bot_config   = ParseConfig.new('cfg/bot_cfg')
+$secret_key   = $bot_config.get_value('secret_key')
 
 # Initialize rufus scheduler
 $scheduler = Rufus::Scheduler.start_new

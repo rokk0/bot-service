@@ -16,11 +16,9 @@ module Core
       @code         = phone[phone.length - 4..phone.length] unless phone.nil? || phone.length < 4
 
       @agent = Mechanize.new do |a|
-        a.user_agent_alias = $bot_config.get_value('user_agent_alias')
+        a.user_agent_alias = 'Linux Mozilla'
         a.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        a.pre_connect_hooks << lambda{|agent, request|
-          request['X-Requested-With'] = 'XMLHttpRequest'
-        }
+        a.pre_connect_hooks << lambda { |agent, request| request['X-Requested-With'] = 'XMLHttpRequest' }
       end
     end
 
@@ -29,7 +27,7 @@ module Core
     end
 
     def login
-      @agent.get($bot_config.get_value('home_page')) do |home_page|
+      @agent.get('http://vk.com') do |home_page|
         login_form        = home_page.forms.first
         login_form.email  = @phone
         login_form.pass   = @password
@@ -46,7 +44,7 @@ module Core
     end
 
     def check_login
-      home_page    = login_security
+      home_page    = security_check
       logout_link  = home_page.link_with(:id => 'logout_link')
 
       @bot_status = { :status => :ok,    :message => 'ok'}
@@ -58,9 +56,11 @@ module Core
     end
 
     def get_user_identifiers
+      @agent.get('http://vk.com/feed')
+
       href = @agent.page.link_with(:class => 'hasedit fl_l').href
 
-      @agent.get("http://vk.com" + href)
+      @agent.get("http://vk.com#{href}")
 
       { :vk_username => @agent.page.title, :vk_profile_link => @agent.page.uri.to_s }
     rescue Exception => e
@@ -88,33 +88,38 @@ module Core
     end
 
     # code - last 4 didgits of a phone number
-    def login_security
-      home_page = @agent.get($bot_config.get_value('home_page'))
+    def security_check
+      home_page = @agent.get('http://vk.com')
 
       if home_page.uri.to_s =~ /security_check/ && !@code.nil?
-        parse_page(home_page, /hash:\s'(\w+)'/)
-        params = {
-          :act  => 'security_check',
-          :code => @code,
-          :to   => home_page.uri.to_s.scan(/to=(.+)&/).flatten.first.to_s,
-          :hash => @hash
-        }
-        @hash = nil
-
-        return @agent.post('http://vk.com/login.php', params)
+        login_security
       else
-        return home_page
+        home_page
       end
     end
 
-    def parse_page(page, regexp)
+    def login_security
+      get_page_hash(home_page, /hash:\s'(\w+)'/)
+      params = {
+        :act  => 'security_check',
+        :code => @code,
+        :to   => home_page.uri.to_s.scan(/to=(.+)&/).flatten.first.to_s,
+        :hash => @hash
+      }
+      @hash = nil
+
+      @agent.post('http://vk.com/login.php', params)
+    end
+
+    def get_page_hash(page, regexp)
       page.search('script').each { |script| @hash ||= script.content.scan(regexp).flatten.first }
       @hash
     end
 
     def get_page_title(page)
       @agent.get(page).title
-    rescue
+    rescue Exception => e
+      logger.error "Error while getting page title: #{e.message}"
       nil
     end
 

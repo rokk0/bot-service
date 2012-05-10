@@ -29,9 +29,12 @@ module Bots
       @vk.bot_status
     end
 
-    def get_hash(page)
+    def get_page_hash(page)
       page = @vk.agent.get(page)
-      @vk.parse_page(page, /hash:\s'([^.]\w*)'/)
+      @vk.get_page_hash(page, /hash:\s'([^.]\w*)'/)
+    rescue Exception => e
+      logger.error "Error while getting discussion page hash: #{e.message}"
+      nil
     end
 
     def get_page_title(page)
@@ -45,7 +48,7 @@ module Bots
         params = {
           :act      => 'post_comment',
           :topic    => @discussion_id,
-          :hash     => @page_hash.empty? ? get_hash(@page) : @page_hash,
+          :hash     => @page_hash.empty? ? get_page_hash(@page) : @page_hash,
           :comment  => @message,
           :al       => '1'
         }

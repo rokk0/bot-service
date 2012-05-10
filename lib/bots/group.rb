@@ -29,9 +29,12 @@ module Bots
       @vk.bot_status
     end
 
-    def get_hash(page)
+    def get_page_hash(page)
       page = @vk.agent.get(page)
-      @vk.parse_page(page, /"post_hash":"([^.]\w*)"/)
+      @vk.get_page_hash(page, /"post_hash":"([^.]\w*)"/)
+    rescue Exception => e
+      logger.error "Error while getting group page hash: #{e.message}"
+      nil
     end
 
     def get_page_title(page)
@@ -44,7 +47,7 @@ module Bots
       if @vk.logged_in?
         params = {
           :act      => 'post',
-          :hash     => @page_hash.empty? ? get_hash(@page) : @page_hash,
+          :hash     => @page_hash.empty? ? get_page_hash(@page) : @page_hash,
           :type     => 'all',
           :message  => @message,
           :to_id    => @group_id,

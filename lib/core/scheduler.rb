@@ -32,7 +32,8 @@ module Core
       end
 
       status
-    rescue
+    rescue Exception => e
+      logger.error "Error while running worker in scheduler: #{e.message}"
       { :status => :error, :message => 'data error' }
     end
 

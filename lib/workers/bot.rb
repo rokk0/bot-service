@@ -22,7 +22,7 @@ class BotWorker
     status = { :status => @bot.bot_status[:status], :message => @bot.bot_status[:message] }
 
     unless status[:status] == :error
-      status[:page_hash]  = @bot.get_hash(@bot.page) if @bot.page_hash.empty?
+      status[:page_hash]  = @bot.get_page_hash(@bot.page) if @bot.page_hash.empty?
       status[:page_title] = @bot.get_page_title(@bot.page) if @bot.page_title.empty?
     end
 
@@ -53,7 +53,8 @@ class BotWorker
     account = decrypt(account)
 
     Core::Scheduler.remove_account_jobs(account['account_id'])
-  rescue
+  rescue Exception => e
+    logger.error "Error while stopping account bots: #{e.message}"
     { :status => :error, :message => 'data error' }
   end
 
@@ -61,7 +62,8 @@ class BotWorker
     user = decrypt(user)
 
     Core::Scheduler.remove_user_jobs(user['user_id'])
-  rescue
+  rescue Exception => e
+    logger.error "Error while stopping user bots: #{e.message}"
     { :status => :error, :message => 'data error' }
   end
 
@@ -114,14 +116,16 @@ class BotWorker
     end
 
     { :session => session }
-  rescue
+  rescue Exception => e
+    logger.error "Error while checking VK session: #{e.message}"
     { :session => false }
   end
 
   def self.decrypt(data)
     decrypted_value = Encryptor.decrypt(data, :key => $secret_key)
     JSON.parse(decrypted_value)
-  rescue
+  rescue Exception => e
+    logger.error "Error while decrypting data: #{e.message}"
     nil
   end
 

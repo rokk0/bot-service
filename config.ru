@@ -4,7 +4,7 @@ require 'parseconfig'
 require 'clogger'
 
 # Define some config parameters
-$bot_config = ParseConfig.new('cfg/bot_cfg')
+$bot_config = ParseConfig.new('cfg/service_cfg')
 $secret_key = $bot_config.get_value('secret_key')
 
 # Initialize rufus scheduler

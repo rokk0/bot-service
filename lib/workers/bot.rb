@@ -99,7 +99,7 @@ class BotWorker
    @vk.login
    @vk.bot_status.merge(@vk.get_user_identifiers)
   rescue Exception => e
-    logger.error "account not approved", e
+    logger.error 'account not approved', e
     { :status => :error, :message => 'data error' }
   end
 

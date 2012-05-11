@@ -39,7 +39,7 @@ module Core
       @agent
     rescue Exception => e
       #TODO: check if login REALLY failed at this point
-      logger.error "login failed #{e.message}"
+      logger.error "login failed", e
       nil
     end
 

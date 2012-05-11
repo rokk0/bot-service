@@ -37,7 +37,7 @@ class Clogger
   # Adding our fancy log format
   module Format
 
-    Fancy = "#{Time.now.strftime("%Y-%m-%d %H:%M:%S")} [  REQ] $remote_addr : $request -- $status"
+    Fancy = "#{Time.now.strftime("%Y-%m-%d %H:%M:%S")} [  REQ] from $remote_addr: \"$request_method $request_uri\" \u25B8 $status"
 
   end
 

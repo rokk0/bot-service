@@ -32,6 +32,9 @@ end
 # => Routes for /api/bot
 require_relative 'routes/bot'
 
+# => Routes for /api/account
+require_relative 'routes/account'
+
 not_found do
   { :status => :failed, :message => 'not found' }.to_json
 end

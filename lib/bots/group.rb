@@ -46,12 +46,12 @@ module Bots
 
       if @vk.logged_in?
         params = {
-          :act      => 'post',
-          :hash     => @page_hash.empty? ? get_page_hash(@page) : @page_hash,
-          :type     => 'all',
-          :message  => @message,
-          :to_id    => @group_id,
-          :al       => '1'
+          :act     => 'post',
+          :hash    => @page_hash.empty? ? get_page_hash(@page) : @page_hash,
+          :type    => 'all',
+          :message => @message,
+          :to_id   => @group_id,
+          :al      => '1'
         }
 
         @msg_count += 1

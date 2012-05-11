@@ -1,6 +1,8 @@
 module Core
   class Scheduler
 
+    include Logging
+
     def self.add_job(bot)
       status = { :status => :info, :message => 'already running' }
 
@@ -12,9 +14,9 @@ module Core
 
         # Bot spams outside of scheduler cycle and returns status
         worker.spam
-        status            = worker.get_worker_status
-        interval_check    = bot['interval'] =~ /(\d+)h(\d+)m/
-        status[:status]   = :sent if status[:status] != :error && interval_check == nil
+        status          = worker.get_worker_status
+        interval_check  = bot['interval'] =~ /(\d+)h(\d+)m/
+        status[:status] = :sent if status[:status] != :error && interval_check == nil
 
         # Cycle makes first iterate at Time.now
         # So at first time we put status in job tags, but bot doesn't spam

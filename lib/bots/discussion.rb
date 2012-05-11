@@ -15,14 +15,14 @@ module Bots
 
       @vk = $accounts[bot['account_id']]
 
-      @id             = bot['id']
-      @user_id        = bot['user_id']
-      @page           = bot['page']
-      @discussion_id  = '-' + @page[/\d+_\d+/].to_s
-      @page_hash      = bot['page_hash']
-      @message        = bot['message']
-      @page_title     = bot['page_title']
-      @msg_count      = 0
+      @id            = bot['id']
+      @user_id       = bot['user_id']
+      @page          = bot['page']
+      @discussion_id = '-' + @page[/\d+_\d+/].to_s
+      @page_hash     = bot['page_hash']
+      @message       = bot['message']
+      @page_title    = bot['page_title']
+      @msg_count     = 0
     end
 
     def bot_status
@@ -46,11 +46,11 @@ module Bots
 
       if @vk.logged_in?
         params = {
-          :act      => 'post_comment',
-          :topic    => @discussion_id,
-          :hash     => @page_hash.empty? ? get_page_hash(@page) : @page_hash,
-          :comment  => @message,
-          :al       => '1'
+          :act     => 'post_comment',
+          :topic   => @discussion_id,
+          :hash    => @page_hash.empty? ? get_page_hash(@page) : @page_hash,
+          :comment => @message,
+          :al      => '1'
         }
 
         @msg_count += 1

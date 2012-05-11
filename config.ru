@@ -4,8 +4,8 @@ require 'parseconfig'
 require 'clogger'
 
 # Define some config parameters
-$bot_config   = ParseConfig.new('cfg/bot_cfg')
-$secret_key   = $bot_config.get_value('secret_key')
+$bot_config = ParseConfig.new('cfg/bot_cfg')
+$secret_key = $bot_config.get_value('secret_key')
 
 # Initialize rufus scheduler
 $scheduler = Rufus::Scheduler.start_new
@@ -17,9 +17,9 @@ $accounts = {}
 require File.expand_path('../web/server', __FILE__)
 
 use Clogger,
-    :format => Clogger::Format::Fancy,
-    :logger=> $stdout,
+    :format    => Clogger::Format::Fancy,
+    :logger    => $stdout,
     :reentrant => false
 
 run Rack::URLMap.new \
-  "/"       => Sinatra::Application
+  "/" => Sinatra::Application

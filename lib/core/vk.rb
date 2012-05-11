@@ -8,12 +8,12 @@ module Core
     attr_reader :bot_status, :agent
 
     def initialize(phone, password)
-      @logged_in    = false
-      @bot_status   = { :status => :error, :message => 'initialize error'}
+      @logged_in  = false
+      @bot_status = { :status => :error, :message => 'initialize error'}
 
-      @phone        = phone
-      @password     = password
-      @code         = phone[phone.length - 4..phone.length] unless phone.nil? || phone.length < 4
+      @phone      = phone
+      @password   = password
+      @code       = phone[phone.length - 4..phone.length] unless phone.nil? || phone.length < 4
 
       @agent = Mechanize.new do |a|
         a.user_agent_alias = 'Linux Mozilla'
@@ -28,9 +28,9 @@ module Core
 
     def login
       @agent.get('http://vk.com') do |home_page|
-        login_form        = home_page.forms.first
-        login_form.email  = @phone
-        login_form.pass   = @password
+        login_form       = home_page.forms.first
+        login_form.email = @phone
+        login_form.pass  = @password
         login_form.submit
 
         check_login
@@ -44,8 +44,8 @@ module Core
     end
 
     def check_login
-      home_page    = security_check
-      logout_link  = home_page.link_with(:id => 'logout_link')
+      home_page   = security_check
+      logout_link = home_page.link_with(:id => 'logout_link')
 
       @bot_status = { :status => :ok,    :message => 'ok'}
       @bot_status = { :status => :error, :message => 'invalid login/password'} if logout_link.nil?

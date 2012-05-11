@@ -1,14 +1,9 @@
 # Should return bot info
 # {
-#   :status => :running/:stopped/:error
-#   :id =>
+#   :status  => :ok/:warning/:error
+#   :message =>
 #   ...
 # }
-
-# Should approve account login
-post '/api/account/approve/?' do
-  BotWorker.approve(params[:account]).to_json
-end
 
 # Should return bot status
 get '/api/bot/:id' do
@@ -39,9 +34,4 @@ end
 # Should return user bots
 get '/api/user/:id/bots' do
   BotWorker.get_user_bots(params[:id]).to_json
-end
-
-# Should check global variable with worker
-post '/api/account/check_session/?' do
-  BotWorker.check_session(params[:account]).to_json
 end

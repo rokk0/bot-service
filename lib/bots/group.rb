@@ -7,7 +7,7 @@ module Bots
 
     def initialize(bot)
       if $accounts[bot['account_id']].nil? || !$accounts[bot['account_id']].logged_in?
-        vk = Core::Vk.new(bot['phone'], bot['password'])
+        vk = Core::Vk.new(bot['phone'], bot['password'], bot['code'])
         vk.login
 
         $accounts[bot['account_id']] = vk

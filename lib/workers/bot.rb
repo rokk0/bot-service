@@ -95,9 +95,10 @@ class BotWorker
   def self.approve(account)
    account = decrypt(account)
 
-   @vk = Core::Vk.new(account['phone'], account['password'])
-   @vk.login
-   @vk.bot_status.merge(@vk.get_user_identifiers)
+   vk = Core::Vk.new(account['phone'], account['password'], account['code'])
+   vk.login
+
+   vk.logged_in? ? vk.bot_status.merge(vk.get_user_identifiers) : vk.bot_status
   rescue Exception => e
     logger.error 'account not approved', e
     { :status => :error, :message => 'data error' }
@@ -108,7 +109,7 @@ class BotWorker
     session = !$accounts[account['id']].nil? && $accounts[account['id']].logged_in?
 
     unless session
-      vk = Core::Vk.new(account['phone'], account['password'])
+      vk = Core::Vk.new(account['phone'], account['password'], account['code'])
       vk.login
       session = vk.logged_in?
 

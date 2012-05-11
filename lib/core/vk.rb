@@ -7,18 +7,19 @@ module Core
 
     attr_reader :bot_status, :agent
 
-    def initialize(phone, password)
+    def initialize(phone, password, code)
       @logged_in  = false
       @bot_status = { :status => :error, :message => 'initialize error'}
 
       @phone      = phone
       @password   = password
-      @code       = phone[phone.length - 4..phone.length] unless phone.nil? || phone.length < 4
+      @code       = code
 
       @agent = Mechanize.new do |a|
         a.user_agent_alias = 'Linux Mozilla'
         a.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         a.pre_connect_hooks << lambda { |agent, request| request['X-Requested-With'] = 'XMLHttpRequest' }
+        #a.set_proxy('116.90.211.136', 8080) #example
       end
     end
 
@@ -65,7 +66,7 @@ module Core
       { :vk_username => @agent.page.title, :vk_profile_link => @agent.page.uri.to_s }
     rescue Exception => e
       logger.error "something fucked up while trying to grab user info. here's the error: #{e.message}"
-      nil
+      {}
     end
 
     # Check existing of page
@@ -92,13 +93,13 @@ module Core
       home_page = @agent.get('http://vk.com')
 
       if home_page.uri.to_s =~ /security_check/ && !@code.nil?
-        login_security
+        login_security(home_page)
       else
         home_page
       end
     end
 
-    def login_security
+    def login_security(home_page)
       get_page_hash(home_page, /hash:\s'(\w+)'/)
       params = {
         :act  => 'security_check',

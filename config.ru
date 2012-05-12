@@ -21,5 +21,4 @@ use Clogger,
     :logger    => $stdout,
     :reentrant => false
 
-run Rack::URLMap.new \
-  "/" => Sinatra::Application
+run Sinatra::Application

@@ -16,6 +16,7 @@ module Core
         worker.spam
         status          = worker.get_worker_status
         interval_check  = bot['interval'] =~ /(\d+)h(\d+)m/
+        status[:bot_id] = bot['id']
         status[:status] = :sent if status[:status] != :error && interval_check == nil
 
         # Cycle makes first iterate at Time.now
@@ -36,7 +37,7 @@ module Core
       status
     rescue Exception => e
       logger.error "Error while running worker in scheduler: #{e.message}"
-      { :status => :error, :message => 'data error' }
+      { :bot_id => bot['id'], :status => :error, :message => 'data error' }
     end
 
     def self.remove_job(bot_id)

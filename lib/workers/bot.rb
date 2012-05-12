@@ -36,7 +36,7 @@ class BotWorker
     Core::Scheduler.add_job(bot)
   rescue Exception => e
     logger.error "Error while starting bot ##{bot['id']}", e
-    { :status => :error, :message => 'data error' }
+    { :bot_id => bot['id'], :status => :error, :message => 'data error' }
   end
 
   def self.stop(bot)

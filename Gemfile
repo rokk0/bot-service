@@ -2,7 +2,7 @@ source :gemcutter
 source 'http://gems.github.com'
 
 # Servers
-gem 'unicorn'
+gem 'puma'
 gem 'sinatra'
 
 # Stuff

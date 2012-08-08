@@ -1,11 +1,11 @@
 require 'rubygems'
 require 'rufus/scheduler'
-require 'parseconfig'
+require 'yaml'
 require 'clogger'
 
 # Define some config parameters
-$bot_config = ParseConfig.new('cfg/service_cfg')
-$secret_key = $bot_config.get_value('secret_key')
+$bot_config = YAML.load(File.read("config/service.yml"))
+$secret_key = $bot_config['secret_key']
 
 # Initialize rufus scheduler
 $scheduler = Rufus::Scheduler.start_new

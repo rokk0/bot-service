@@ -59,7 +59,7 @@ module Core
     def get_user_identifiers
       @agent.get('http://vk.com/feed')
 
-      href = @agent.page.link_with(:class => 'hasedit fl_l').href
+      href = @agent.page.link_with(:id => 'myprofile').href
 
       @agent.get("http://vk.com#{href}")
 

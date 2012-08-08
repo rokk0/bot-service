@@ -7,12 +7,13 @@ gem 'sinatra'
 
 # Stuff
 gem 'mechanize'
-gem 'parseconfig'
 gem 'rufus-scheduler'
 gem 'encryptor'
 
 # Debugging
 gem 'debugger'
+gem 'pry'
+gem 'pry-doc'
 
 # Logging
 gem 'little_log_friend'

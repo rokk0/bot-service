@@ -11,10 +11,13 @@ gem 'rufus-scheduler'
 gem 'encryptor'
 
 # Debugging
-gem 'debugger'
 gem 'pry'
 gem 'pry-doc'
 
 # Logging
 gem 'little_log_friend'
 gem 'clogger'
+
+# Running/Deployment
+gem 'foreman'
+gem 'capistrano'
